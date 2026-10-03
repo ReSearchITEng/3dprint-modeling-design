@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>3D Printable CAD Viewer - Mobile Friendly</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #121212;
+      color: #ffffff;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+    }
+    #canvas-container {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    #ui-container {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+    .card {
+      background: rgba(30, 30, 30, 0.85);
+      backdrop-filter: blur(10px);
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      pointer-events: auto;
+    }
+    select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      background: #2a2a2a;
+      color: #fff;
+      border: 1px solid #444;
+      font-size: 16px;
+      margin-top: 6px;
+      outline: none;
+    }
+    #controls-bar {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      gap: 10px;
+    }
+    .btn {
+      background: #007aff;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+      transition: background 0.2s;
+    }
+    .btn:active {
+      background: #0056b3;
+    }
+    #info-box {
+      font-size: 13px;
+      color: #bbb;
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+  </style>
+  <!-- Three.js r128 matching scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+</head>
+<body>
+
+  <div id="canvas-container"></div>
+
+  <div id="ui-container">
+    <div class="card">
+      <label for="model-select" style="font-weight: 600; font-size: 14px;">Select CAD Model:</label>
+      <select id="model-select">
+        <option value="">Loading models...</option>
+      </select>
+      <div id="info-box">Select a model to view 3D geometry and details.</div>
+    </div>
+  </div>
+
+  <div id="controls-bar">
+    <button class="btn" id="reset-view-btn">Reset View</button>
+  </div>
+
+  <script>
+    let scene, camera, renderer, controls, currentMesh;
+
+    function init() {
+      const container = document.getElementById('canvas-container');
+
+      // Scene
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x181818);
+
+      // Camera
+      camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.set(100, 100, 100);
+
+      // Lights
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+      scene.add(ambientLight);
+
+      const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.2);
+      dirLight1.position.set(1, 2, 1).normalize();
+      scene.add(dirLight1);
+
+      const dirLight2 = new THREE.DirectionalLight(0x555555, 0.8);
+      dirLight2.position.set(-1, -1, -1).normalize();
+      scene.add(dirLight2);
+
+      // Grid Helper
+      const gridHelper = new THREE.GridHelper(200, 20, 0x444444, 0x222222);
+      gridHelper.position.y = 0;
+      scene.add(gridHelper);
+
+      // Renderer
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      container.appendChild(renderer.domElement);
+
+      // Controls
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+
+      window.addEventListener('resize', onWindowResize);
+      document.getElementById('reset-view-btn').addEventListener('click', resetView);
+
+      loadManifest();
+    }
+
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function resetView() {
+      if (currentMesh) {
+        fitCameraToMesh(currentMesh);
+      } else {
+        camera.position.set(100, 100, 100);
+        controls.target.set(0, 0, 0);
+        controls.update();
+      }
+    }
+
+    function loadManifest() {
+      fetch('models/index.json')
+        .then(response => {
+          if (!response.ok) throw new Error("Manifest not found");
+          return response.json();
+        })
+        .then(data => {
+          const select = document.getElementById('model-select');
+          select.innerHTML = '';
+          if (data.models && data.models.length > 0) {
+            data.models.forEach((m) => {
+              const opt = document.createElement('option');
+              opt.value = m.glb_path;
+              opt.textContent = m.name;
+              opt.dataset.info = JSON.stringify(m);
+              select.appendChild(opt);
+            });
+            select.addEventListener('change', (e) => {
+              const selectedOption = select.options[select.selectedIndex];
+              loadGLB(e.target.value, JSON.parse(selectedOption.dataset.info));
+            });
+            // Load first model
+            loadGLB(data.models[0].glb_path, data.models[0]);
+          } else {
+            select.innerHTML = '<option value="">No models available</option>';
+          }
+        })
+        .catch(err => {
+          console.warn("Falling back or no index.json:", err);
+          document.getElementById('model-select').innerHTML = '<option value="">No models built yet</option>';
+        });
+    }
+
+    function loadGLB(path, modelMeta) {
+      if (!path) return;
+
+      const loader = new THREE.GLTFLoader();
+      document.getElementById('info-box').textContent = "Loading 3D model...";
+
+      loader.load(path, (gltf) => {
+        if (currentMesh) {
+          scene.remove(currentMesh);
+        }
+        currentMesh = gltf.scene;
+        scene.add(currentMesh);
+
+        fitCameraToMesh(currentMesh);
+
+        let infoTxt = `Model: ${modelMeta.name || 'CAD Model'}`;
+        if (modelMeta.dimensions) {
+          infoTxt += ` | Size: ${modelMeta.dimensions[0]}x${modelMeta.dimensions[1]}x${modelMeta.dimensions[2]} mm`;
+        }
+        document.getElementById('info-box').textContent = infoTxt;
+      }, undefined, (error) => {
+        console.error("Error loading GLB:", error);
+        document.getElementById('info-box').textContent = "Failed to load model GLB file.";
+      });
+    }
+
+    function fitCameraToMesh(mesh) {
+      const box = new THREE.Box3().setFromObject(mesh);
+      const center = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(new THREE.Vector3());
+
+      const maxDim = Math.max(size.x, size.y, size.z);
+      const fov = camera.fov * (Math.PI / 180);
+      let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2)) * 2.2;
+
+      camera.position.set(center.x + cameraZ, center.y + cameraZ, center.z + cameraZ);
+      camera.lookAt(center);
+      controls.target.copy(center);
+      controls.update();
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    init();
+    animate();
+  </script>
+</body>
+</html>
