@@ -1,0 +1,24 @@
+{
+  "updated_at": "2026-10-03T07:00:00Z",
+  "models": [
+    {
+      "id": "mounting_plate",
+      "name": "Mounting Plate",
+      "glb_path": "models/mounting_plate/output/model.glb",
+      "step_path": "models/mounting_plate/output/model.step",
+      "stl_path": "models/mounting_plate/output/model.stl",
+      "3mf_path": "models/mounting_plate/output/model.3mf",
+      "dimensions": [
+        60.0,
+        40.0,
+        6.0
+      ],
+      "renders": [
+        "models/mounting_plate/renders/iso.png",
+        "models/mounting_plate/renders/front.png",
+        "models/mounting_plate/renders/top.png",
+        "models/mounting_plate/renders/side.png"
+      ]
+    }
+  ]
+}

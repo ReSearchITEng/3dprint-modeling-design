@@ -1,0 +1,151 @@
+{
+  "printers": {
+    "bambu_x1c": {
+      "name": "Bambu Lab X1 Carbon",
+      "build_volume_mm": [256, 256, 256],
+      "nozzle_diameters": [0.2, 0.4, 0.6, 0.8],
+      "default_nozzle": 0.4,
+      "default_layer_height": 0.2,
+      "min_layer_height": 0.08,
+      "max_layer_height": 0.28,
+      "min_wall_thickness_mm": 0.8,
+      "min_feature_size_mm": 0.4,
+      "max_overhang_angle_deg": 45,
+      "max_bridge_length_mm": 15,
+      "supports_multicolor": true,
+      "ams_slots": 4
+    },
+    "bambu_p1s": {
+      "name": "Bambu Lab P1S",
+      "build_volume_mm": [256, 256, 256],
+      "nozzle_diameters": [0.2, 0.4, 0.6, 0.8],
+      "default_nozzle": 0.4,
+      "default_layer_height": 0.2,
+      "min_layer_height": 0.08,
+      "max_layer_height": 0.28,
+      "min_wall_thickness_mm": 0.8,
+      "min_feature_size_mm": 0.4,
+      "max_overhang_angle_deg": 45,
+      "max_bridge_length_mm": 15,
+      "supports_multicolor": true,
+      "ams_slots": 4
+    },
+    "bambu_p1p": {
+      "name": "Bambu Lab P1P",
+      "build_volume_mm": [256, 256, 256],
+      "nozzle_diameters": [0.2, 0.4, 0.6, 0.8],
+      "default_nozzle": 0.4,
+      "default_layer_height": 0.2,
+      "min_layer_height": 0.08,
+      "max_layer_height": 0.28,
+      "min_wall_thickness_mm": 0.8,
+      "min_feature_size_mm": 0.4,
+      "max_overhang_angle_deg": 45,
+      "max_bridge_length_mm": 15,
+      "supports_multicolor": true,
+      "ams_slots": 4
+    },
+    "bambu_a1": {
+      "name": "Bambu Lab A1",
+      "build_volume_mm": [256, 256, 256],
+      "nozzle_diameters": [0.2, 0.4, 0.6, 0.8],
+      "default_nozzle": 0.4,
+      "default_layer_height": 0.2,
+      "min_layer_height": 0.08,
+      "max_layer_height": 0.28,
+      "min_wall_thickness_mm": 0.8,
+      "min_feature_size_mm": 0.4,
+      "max_overhang_angle_deg": 45,
+      "max_bridge_length_mm": 15,
+      "supports_multicolor": true,
+      "ams_slots": 4
+    },
+    "bambu_a1_mini": {
+      "name": "Bambu Lab A1 Mini",
+      "build_volume_mm": [180, 180, 180],
+      "nozzle_diameters": [0.2, 0.4, 0.6, 0.8],
+      "default_nozzle": 0.4,
+      "default_layer_height": 0.2,
+      "min_layer_height": 0.08,
+      "max_layer_height": 0.28,
+      "min_wall_thickness_mm": 0.8,
+      "min_feature_size_mm": 0.4,
+      "max_overhang_angle_deg": 45,
+      "max_bridge_length_mm": 15,
+      "supports_multicolor": true,
+      "ams_slots": 4
+    },
+    "bambu_x1e": {
+      "name": "Bambu Lab X1E",
+      "build_volume_mm": [256, 256, 256],
+      "nozzle_diameters": [0.2, 0.4, 0.6, 0.8],
+      "default_nozzle": 0.4,
+      "default_layer_height": 0.2,
+      "min_layer_height": 0.08,
+      "max_layer_height": 0.28,
+      "min_wall_thickness_mm": 0.8,
+      "min_feature_size_mm": 0.4,
+      "max_overhang_angle_deg": 45,
+      "max_bridge_length_mm": 15,
+      "supports_multicolor": true,
+      "ams_slots": 4
+    },
+    "bambu_x2d": {
+      "name": "Bambu Lab X2D",
+      "build_volume_mm": [300, 300, 300],
+      "nozzle_diameters": [0.2, 0.4, 0.6, 0.8],
+      "default_nozzle": 0.4,
+      "default_layer_height": 0.2,
+      "min_layer_height": 0.08,
+      "max_layer_height": 0.28,
+      "min_wall_thickness_mm": 0.8,
+      "min_feature_size_mm": 0.4,
+      "max_overhang_angle_deg": 45,
+      "max_bridge_length_mm": 15,
+      "supports_multicolor": true,
+      "ams_slots": 4
+    },
+    "generic_fdm": {
+      "name": "Generic FDM Printer",
+      "build_volume_mm": [220, 220, 250],
+      "nozzle_diameters": [0.4],
+      "default_nozzle": 0.4,
+      "default_layer_height": 0.2,
+      "min_layer_height": 0.1,
+      "max_layer_height": 0.3,
+      "min_wall_thickness_mm": 0.8,
+      "min_feature_size_mm": 0.5,
+      "max_overhang_angle_deg": 45,
+      "max_bridge_length_mm": 10,
+      "supports_multicolor": false,
+      "ams_slots": 0
+    }
+  },
+  "materials": {
+    "PLA": {
+      "shrinkage_factor": 1.002,
+      "recommended_tolerance_mm": 0.15,
+      "density_g_cm3": 1.24
+    },
+    "PETG": {
+      "shrinkage_factor": 1.004,
+      "recommended_tolerance_mm": 0.20,
+      "density_g_cm3": 1.27
+    },
+    "ABS": {
+      "shrinkage_factor": 1.008,
+      "recommended_tolerance_mm": 0.25,
+      "density_g_cm3": 1.04
+    },
+    "ASA": {
+      "shrinkage_factor": 1.007,
+      "recommended_tolerance_mm": 0.25,
+      "density_g_cm3": 1.07
+    },
+    "TPU": {
+      "shrinkage_factor": 1.010,
+      "recommended_tolerance_mm": 0.30,
+      "density_g_cm3": 1.21
+    }
+  }
+}
